@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+
+  php-fpm:
+    build:
+      context: .
+      dockerfile: Dockerfile-php
+      args:
+        PHPFPM_USER_ID: ${PHPFPM_USER_ID}
+        PHPFPM_GROUP_ID: ${PHPFPM_GROUP_ID}
+    user: "${PHPFPM_USER_ID}:${PHPFPM_GROUP_ID}"
+    container_name: php-${PROJECT_NAME}
+    ports:
+      - ${HOST_PHP_PORT}:9000
+    environment:
+      ENV_FILE_LOCATION: ${ENV_FILE_LOCATION}
+    volumes:
+      - ./storage:/var/www/storage
+      - ./code:/var/www/html
+      - ./.env:${ENV_FILE_LOCATION}
+      - ./log/php:/var/www/log
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    container_name: nginx-${PROJECT_NAME}
+    ports:
+      - ${HOST_WEB_PORT_HTTP}:80
+      - ${HOST_WEB_PORT_HTTPS}:443
+    volumes:
+      - ./certificates:/var/www/certificates
+      - ./log/nginx:/var/www/log
+    links:
+      - "php-fpm:php-fpm"
+

@@ -1,0 +1,33 @@
+{
+
+    "name": "frank-deboer-online/primertest",
+    "description": "",
+
+    "minimum-stability": "dev",
+
+    "require": {
+        "php": ">=7.2",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^6.3@dev",
+        "symfony/http-foundation": "^4.3@dev",
+        "symfony/yaml": "^4.2",
+        "doctrine/dbal": "^2.9@dev",
+        "robmorgan/phinx": "^0.10.6",
+        "ext-bcmath": "*",
+        "moontoast/math": "^1.1",
+        "tuupola/base58": "^0.4.0",
+        "ramsey/uuid": "^2.9",
+        "vlucas/phpdotenv": "^3.3@dev"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "6.*"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "FrankDeBoerOnline\\" : ["src/FrankDeBoerOnline/", "html/src/FrankDeBoerOnline/"],
+            "Tests\\FrankDeBoerOnline\\" : ["tests/FrankDeBoerOnline/", "html/tests/FrankDeBoerOnline/"]
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "testArray": [
+    "value1",
+    "value2"
+  ],
+
+  "testObject": {
+    "property1": "value1",
+    "property2": "value2"
+  }
+
+}

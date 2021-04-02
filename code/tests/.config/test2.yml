@@ -1,0 +1,8 @@
+testArray:
+  - value1 # comment 1
+  - value2
+
+# Comments work
+testObject:
+  property1: value1
+  property2: value2 #comment 2

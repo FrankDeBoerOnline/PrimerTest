@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-${PROJECT_NAME}
+    user: "${MYSQL_USER_ID}:${MYSQL_GROUP_ID}"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - ./config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./storage/mysql:/var/lib/mysql
+      - ./log/mysql:/var/log/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-${PROJECT_NAME}
+    environment:
+      - MYSQL_USERNAME=${DB_USERNAME}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - PMA_HOST=${DB_HOST}
+      - PMA_PORT=${DB_PORT}
+    ports:
+      - ${HOST_PHPMYADMIN_PORT_HTTP}:80
+    links:
+      - "mysql:mysql"
+
+  php-fpm:
+    build:
+      context: .
+      dockerfile: Dockerfile-php
+      args:
+        PHPFPM_USER_ID: ${PHPFPM_USER_ID}
+        PHPFPM_GROUP_ID: ${PHPFPM_GROUP_ID}
+    user: "${PHPFPM_USER_ID}:${PHPFPM_GROUP_ID}"
+    container_name: php-${PROJECT_NAME}
+    ports:
+      - ${HOST_PHP_PORT}:9000
+    environment:
+      ENV_FILE_LOCATION: ${ENV_FILE_LOCATION}
+    volumes:
+      - ./storage:/var/www/storage
+      - ./code:/var/www/html
+      - ./.env:${ENV_FILE_LOCATION}
+      - ./log/php:/var/www/log
+    links:
+      - "mysql:mysql"
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    container_name: nginx-${PROJECT_NAME}
+    ports:
+      - ${HOST_WEB_PORT_HTTP}:80
+      - ${HOST_WEB_PORT_HTTPS}:443
+    volumes:
+      - ./certificates:/var/www/certificates
+      - ./log/nginx:/var/www/log
+    links:
+      - "php-fpm:php-fpm"
+

@@ -1,0 +1,43 @@
+FROM phpdockerio/php72-fpm:latest
+
+ARG PHPFPM_USER_ID
+ARG PHPFPM_GROUP_ID
+
+RUN mkdir -p /run && chmod 777 /run
+RUN mkdir -p /.composer && chmod -R 777 /.composer
+
+ADD config/php/zz-fpm-overrides.conf /etc/php/7.2/fpm/pool.d/
+ADD config/php/99-overrides.ini /etc/php/7.2/fpm/conf.d/
+
+RUN apt-get update
+
+RUN apt-get -y --no-install-recommends --fix-missing install \
+    git \
+    php7.2-curl \
+    php7.2-mysql \
+    php7.2-pgsql \
+    php7.2-sqlite3 \
+    php7.2-redis \
+    php7.2-gd \
+    php7.2-mbstring \
+    php7.2-bcmath \
+    php7.2-gmp
+
+RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+# Composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_VENDOR_DIR=/var/www/vendor
+ENV COMPOSER_NO_INTERACTION=1
+
+COPY code/composer.json /var/www/html/composer.json
+WORKDIR /var/www/html
+RUN composer install
+RUN chown -R $PHPFPM_USER_ID:$PHPFPM_GROUP_ID /var/www/vendor
+
+ADD config/php/entrypoint.sh /opt/entrypoint.sh
+RUN chmod +x /opt/entrypoint.sh
+
+ENTRYPOINT ["/opt/entrypoint.sh"]
+
+CMD /usr/bin/php-fpm
