@@ -131,4 +131,67 @@ class UserRouter extends AbstractRouter
         }
     }
 
+    public function postUserPasswordReset()
+    {
+        try {
+
+            $userId = (int)$this->getRequest()->get('user_id');
+
+            $user = User::find($userId);
+            if(!$user) {
+                return $this->respondJsonError("User not found");
+            }
+
+            try {
+                $tempPass = Password::generateTemporaryPassword();
+                $user->setPassword(Password::generateHash($tempPass));
+                $user->persist();
+
+                // TODO: Mail the user or something
+                // Here
+
+                return $this->respondJson([ 'result' => $user->toJSON()]);
+
+            } catch (DatabaseError $e) {
+                return $this->respondJsonError("User password could not be updated");
+            }
+
+        } catch (\Exception $e) {
+            // For debug purposes we will for now just return the internal error
+            return $this->respondJsonError($e->getMessage());
+        }
+    }
+
+    public function postUserPasswordChange()
+    {
+        try {
+
+            $userId = (int)$this->getRequest()->get('user_id');
+            $oldPassword = (string)$this->getRequest()->get('old_password');
+            $newPassword = (string)$this->getRequest()->get('new_password');
+
+            $user = User::find($userId);
+            if(!$user) {
+                return $this->respondJsonError("User not found");
+            }
+
+            if(!Password::validate($oldPassword, $user->getPassword())) {
+                return $this->respondJsonError("Old password does not match");
+            }
+
+            try {
+                $user->setPassword(Password::generateHash($newPassword));
+                $user->persist();
+                return $this->respondJson([ 'result' => $user->toJSON()]);
+
+            } catch (DatabaseError $e) {
+                return $this->respondJsonError("User password could not be updated");
+            }
+
+        } catch (\Exception $e) {
+            // For debug purposes we will for now just return the internal error
+            return $this->respondJsonError($e->getMessage());
+        }
+    }
+
 }
