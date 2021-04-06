@@ -44,7 +44,7 @@ class UserDepartmentPersistMapper extends AbstractMapping
     public function objectToArray($persistableObject)
     {
         return [
-            'id' => (string)$persistableObject->getId(),
+            'id' => (int)$persistableObject->getId(),
             'user_id' => (string)$persistableObject->getUser()->getId(),
             'department_id' => (string)$persistableObject->getDepartment()->getId()
         ];

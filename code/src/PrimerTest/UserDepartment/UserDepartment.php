@@ -30,37 +30,39 @@ class UserDepartment implements Persistable
 
     public static function getPersistingMapper()
     {
-        // TODO: Implement getPersistingMapper() method.
+        return (new UserDepartmentPersistMapper());
+    }
+
+    /**
+     * @param User|null $user
+     * @param Department|null $department
+     * @return UserDepartment[]
+     * @throws DatabaseError
+     */
+    public static function getUserDepartments(User $user = null, Department $department = null)
+    {
+        $userDepartmentRecordSet = new UserDepartmentRecordSet($user, $department);
+        if($userDepartmentRecordSet->execute()) {
+            return $userDepartmentRecordSet->fetchAll();
+        }
+
+        return [];
     }
 
     /**
      * @param User $user
-     * @return UserDepartment[]
-     * @throws DatabaseError
-     */
-    public static function getDepartmentsForUser(User $user)
-    {
-        $userDepartmentRecordSet = new UserDepartmentRecordSet($user);
-        if($userDepartmentRecordSet->execute()) {
-            return $userDepartmentRecordSet->fetchAll();
-        }
-
-        return [];
-    }
-
-    /**
      * @param Department $department
-     * @return UserDepartment[]
+     * @return UserDepartment|null
      * @throws DatabaseError
      */
-    public static function getUsersForDepartment(Department $department)
+    public static function findUserDepartment(User $user, Department $department)
     {
-        $userDepartmentRecordSet = new UserDepartmentRecordSet(null, $department);
+        $userDepartmentRecordSet = new UserDepartmentRecordSet($user, $department);
         if($userDepartmentRecordSet->execute()) {
-            return $userDepartmentRecordSet->fetchAll();
+            return $userDepartmentRecordSet->fetch();
         }
 
-        return [];
+        return null;
     }
 
     /**
@@ -72,6 +74,18 @@ class UserDepartment implements Persistable
     {
         $this->setUser($user);
         $this->setDepartment($department);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function toJSON()
+    {
+        return [
+            'ud_id' => $this->getId(),
+            'user' => $this->getUser()->toJSON(),
+            'department' => $this->getDepartment()->toJSON()
+        ];
     }
 
     /**

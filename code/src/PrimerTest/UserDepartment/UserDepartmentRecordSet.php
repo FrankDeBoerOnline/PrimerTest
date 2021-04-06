@@ -46,7 +46,7 @@ class UserDepartmentRecordSet extends AbstractRecordSet
         }
 
         if($this->getDepartment()) {
-            $prepareSql .= " AND ($userDepartmentTable.department_id = :departmentId";
+            $prepareSql .= " AND $userDepartmentTable.department_id = :departmentId";
         }
 
         $prepareSql .= " ORDER BY $userDepartmentTable.id";
