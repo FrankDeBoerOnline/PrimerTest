@@ -76,7 +76,7 @@ class Connection implements ConnectionInterface
 
     public function transactional(Closure $func)
     {
-        $this->getDbalConnection()->transactional($func);
+        return $this->getDbalConnection()->transactional($func);
     }
 
 }

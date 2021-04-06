@@ -41,6 +41,7 @@ interface ConnectionInterface
 
     /**
      * @param Closure $func
+     * @return mixed
      * @throws Throwable
      */
     public function transactional(Closure $func);

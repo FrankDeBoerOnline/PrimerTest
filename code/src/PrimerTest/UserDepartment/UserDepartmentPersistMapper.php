@@ -28,13 +28,11 @@ class UserDepartmentPersistMapper extends AbstractMapping
      */
     public function persist($persistableObject, $ignore_mutability = false)
     {
-        $this->transactional(function() use($persistableObject, $ignore_mutability) {
+        return $this->transactional(function() use($persistableObject, $ignore_mutability) {
             $persistableObject->getUser()->persist(true);
             $persistableObject->getDepartment()->persist(true);
-            parent::persist($persistableObject, $ignore_mutability);
+            return parent::persist($persistableObject, $ignore_mutability);
         });
-
-        return $this->getUnique();
     }
 
     /**

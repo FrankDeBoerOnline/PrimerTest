@@ -151,5 +151,56 @@ class UserDepartmentTest extends TestCase
         $department2->delete();
     }
 
+    public function testUserDepartmentCreate()
+    {
+        $user = $this->createUser("User1", "user1@primertest.com");
+        $department = $this->createDepartment("Department1", "Something");
+
+        $userDepartment = UserDepartment::findUserDepartment($user, $department);
+        if($userDepartment) {
+            $userDepartment->delete();
+        }
+
+        // Create a connection between user and department
+        $response = $this->makeRequest(
+            '/UserDepartment/Create',
+            'POST',
+            [
+                'user_id' => $user->getId(),
+                'department_id' => $department->getId()
+            ]
+        );
+
+        // We should have at least a 200 status and a json result
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // First get the new record from the database
+        $userDepartment = UserDepartment::findUserDepartment($user, $department);
+        $this->assertNotNull($userDepartment);
+
+        $jsonContent = json_decode($response->getContent());
+
+        // We should have 2 results
+        $this->assertEquals((int)$userDepartment->getId(), (int)$jsonContent->result->ud_id);
+        $this->assertEquals((int)$user->getId(), (int)$jsonContent->result->user->user_id);
+        $this->assertEquals((int)$department->getId(), (int)$jsonContent->result->department->department_id);
+
+        // Add it again! See if it is 'ignored'
+        $response = $this->makeRequest(
+            '/UserDepartment/Create',
+            'POST',
+            [
+                'user_id' => $user->getId(),
+                'department_id' => $department->getId()
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        // It should return the same ID
+        $this->assertEquals((int)$userDepartment->getId(), (int)$jsonContent->result->ud_id);
+        
+        // Clean up
+        $user->delete();
+        $department->delete();
+    }
 
 }

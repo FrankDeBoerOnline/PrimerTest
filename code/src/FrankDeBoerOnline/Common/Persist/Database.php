@@ -131,11 +131,12 @@ class Database
 
     /**
      * @param Closure $func
+     * @return mixed
      * @throws Throwable
      */
     static public function transactional(Closure $func)
     {
-        self::getConnection()->transactional($func);
+        return self::getConnection()->transactional($func);
     }
 
     /**
