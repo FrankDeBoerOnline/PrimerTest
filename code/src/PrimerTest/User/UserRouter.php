@@ -131,6 +131,31 @@ class UserRouter extends AbstractRouter
         }
     }
 
+    public function postUserLogin()
+    {
+        try {
+
+            $userEmail = $this->getRequest()->get('email');
+            $userPassword = $this->getRequest()->get('password');
+
+            $user = User::findBy('email', $userEmail);
+            if(!$user) {
+                return $this->respondJsonError("User not found");
+            }
+
+            if(Password::validate($userPassword, $user->getPassword())) {
+                // TODO: Here we can do whatever to make sure the login stays
+                return $this->respondJson(['result' => $user->toJSON()]); //Success
+            }
+
+            return $this->respondJsonError("Unable to login");
+
+        } catch (\Exception $e) {
+            // For debug purposes we will for now just return the internal error
+            return $this->respondJsonError($e->getMessage());
+        }
+    }
+
     public function postUserPasswordReset()
     {
         try {
