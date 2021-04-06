@@ -47,7 +47,7 @@ class Password
         ]);
 
         //now do the actual hashing
-        return crypt($password,$param);
+        return crypt(trim($password),$param);
     }
 
     /**
@@ -61,7 +61,7 @@ class Password
         /* Regenerating the with an available hash as the options parameter should
          * produce the same hash if the same password is passed.
          */
-        return crypt($password, $hash) == $hash;
+        return crypt(trim($password), $hash) == $hash;
     }
 
     /**
