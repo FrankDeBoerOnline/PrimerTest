@@ -197,7 +197,37 @@ class UserDepartmentTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         // It should return the same ID
         $this->assertEquals((int)$userDepartment->getId(), (int)$jsonContent->result->ud_id);
-        
+
+        // Clean up
+        $user->delete();
+        $department->delete();
+    }
+
+    public function testUserDepartmentDelete()
+    {
+        $user = $this->createUser("User1", "user1@primertest.com");
+        $department = $this->createDepartment("Department1", "Something");
+        $userDepartment = $this->createUserDepartment($user, $department);
+
+        // Delete the just created connection
+        $response = $this->makeRequest(
+            '/UserDepartment/Delete',
+            'POST',
+            [
+                'user_id' => $user->getId(),
+                'department_id' => $department->getId()
+            ]
+        );
+
+        $this->assertEquals(200, $response->getStatusCode());
+        // It should return the same ID
+        $jsonContent = json_decode($response->getContent());
+        $this->assertEquals((int)$userDepartment->getId(), (int)$jsonContent->result->ud_id);
+
+        // Try to find the connection in the db and it should return NULL
+        $userDepartment = UserDepartment::findUserDepartment($user, $department);
+        $this->assertFalse((bool)$userDepartment);
+
         // Clean up
         $user->delete();
         $department->delete();

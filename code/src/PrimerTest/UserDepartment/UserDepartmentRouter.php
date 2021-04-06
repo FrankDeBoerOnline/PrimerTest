@@ -57,4 +57,31 @@ class UserDepartmentRouter extends AbstractRouter
         }
     }
 
+    public function postUserDepartmentDelete()
+    {
+        try {
+
+            $userId = (int)$this->getRequest()->get('user_id');
+            $departmentId = (int)$this->getRequest()->get('department_id');
+            $user = User::find($userId);
+            $department = Department::find($departmentId);
+
+            if(!$user || !$department) {
+                $this->respondJsonError('Unable to delete connection');
+            }
+
+            $userDepartment = UserDepartment::findUserDepartment($user, $department);
+            if($userDepartment) {
+                $userDepartment->delete();
+                return $this->respondJson([ 'result' => $userDepartment->toJSON()]);
+            }
+
+            return $this->respondJsonError('Connection not found');
+
+        } catch(\Exception $e) {
+            // For debug purposes we will for now just return the internal error
+            return $this->respondJsonError($e->getMessage());
+        }
+    }
+
 }
