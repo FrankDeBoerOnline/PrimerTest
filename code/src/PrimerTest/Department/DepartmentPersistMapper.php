@@ -24,7 +24,7 @@ class DepartmentPersistMapper extends AbstractMapping
     public function objectToArray($persistableObject)
     {
         return [
-            'id' => (string)$persistableObject->getId(),
+            'id' => (int)$persistableObject->getId(),
             'name' => (string)$persistableObject->getName(),
             'description' => (string)$persistableObject->getDescription(),
             'datetime_created' => (string)$persistableObject->getDatetimeCreated()->format('Y-m-d H:i:s'),

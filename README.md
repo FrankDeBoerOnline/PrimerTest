@@ -25,7 +25,7 @@ The following local url (assuming default  `.env`-variables)
 ### Development
 Composer vendor packages are build withing the docker image so not available for your IDE. You can install the packages locally by running the following commands:
 
-``cd ./code && composer install``
+``composer install -d ./code``
 
 
 Changes to composer packages or autoloader can be reflected in the running docker instance:

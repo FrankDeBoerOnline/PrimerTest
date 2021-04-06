@@ -25,7 +25,7 @@ class UserPersistMapper  extends AbstractMapping
     public function objectToArray($persistableObject)
     {
         return [
-            'id' => (string)$persistableObject->getId(),
+            'id' => (int)$persistableObject->getId(),
             'name' => (string)$persistableObject->getName(),
             'email' => (string)$persistableObject->getEmail(),
             'password' => (string)$persistableObject->getPassword(),
@@ -39,8 +39,9 @@ class UserPersistMapper  extends AbstractMapping
      */
     public function arrayToObject($record)
     {
-        $user = new User($record['name'], $record['email'], $record['password'], $record['datetime_created']);
+        $user = new User($record['name'], $record['email'], $record['datetime_created']);
         $user->setId($record['id']);
+        $user->setPassword($record['password']);
         return $user;
     }
 

@@ -44,13 +44,31 @@ class User implements Persistable
         return (new UserPersistMapper());
     }
 
-    public function __construct($name = '', $email = '', $password = '', DateTime $datetimeCreated = null)
+    /**
+     * User constructor.
+     * @param string $name
+     * @param string $email
+     * @param mixed|null $datetimeCreated
+     */
+    public function __construct($name = '', $email = '', $datetimeCreated = null)
     {
         $this
             ->setName($name)
             ->setEmail($email)
-            ->setPassword($password)
             ->setDatetimeCreated($datetimeCreated);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function toJSON()
+    {
+        return [
+            'user_id' => (string)$this->getId(),
+            'name' => (string)$this->getName(),
+            'email' => (string)$this->getEmail(),
+            'datetime_created' => (string)$this->getDatetimeCreated()->getTimestamp()
+        ];
     }
 
     /**
@@ -134,10 +152,10 @@ class User implements Persistable
     }
 
     /**
-     * @param DateTime $datetimeCreated
+     * @param DateTime|mixed|null $datetimeCreated
      * @return $this
      */
-    public function setDatetimeCreated(DateTime $datetimeCreated = null)
+    public function setDatetimeCreated($datetimeCreated = null)
     {
         $this->datetimeCreated = new DateTime($datetimeCreated);
         return $this;

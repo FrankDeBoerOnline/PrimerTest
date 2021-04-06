@@ -2,6 +2,7 @@
 
 namespace PrimerTest\UserDepartment;
 
+use FrankDeBoerOnline\Common\Persist\Error\DatabaseError;
 use FrankDeBoerOnline\Common\Persist\Persistable;
 use FrankDeBoerOnline\Common\Persist\Persisting;
 use PrimerTest\Department\Department;
@@ -30,6 +31,36 @@ class UserDepartment implements Persistable
     public static function getPersistingMapper()
     {
         // TODO: Implement getPersistingMapper() method.
+    }
+
+    /**
+     * @param User $user
+     * @return UserDepartment[]
+     * @throws DatabaseError
+     */
+    public static function getDepartmentsForUser(User $user)
+    {
+        $userDepartmentRecordSet = new UserDepartmentRecordSet($user);
+        if($userDepartmentRecordSet->execute()) {
+            return $userDepartmentRecordSet->fetchAll();
+        }
+
+        return [];
+    }
+
+    /**
+     * @param Department $department
+     * @return UserDepartment[]
+     * @throws DatabaseError
+     */
+    public static function getUsersForDepartment(Department $department)
+    {
+        $userDepartmentRecordSet = new UserDepartmentRecordSet(null, $department);
+        if($userDepartmentRecordSet->execute()) {
+            return $userDepartmentRecordSet->fetchAll();
+        }
+
+        return [];
     }
 
     /**

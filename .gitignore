@@ -3,10 +3,6 @@
 /certificates/
 !/certificates/.gitkeep
 
-/code/
-!/code/.gitkeep
-!/code/public/.gitkeep
-
 /storage/
 !/storage/mysql/.gitkeep
 
@@ -17,3 +13,5 @@
 !/log/php/.gitkeep
 
 /.idea/
+
+/code/vendor/

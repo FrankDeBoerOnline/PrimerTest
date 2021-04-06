@@ -101,7 +101,6 @@ class RecordSingle
         $exists = self::exists($mapper, $formattedUnique);
 
         if(!$exists) {
-            var_dump("Here");
             self::getObjectCache()->unsetCache($mapper, $formattedUnique);
             return 0; # No records affected
         }
@@ -219,7 +218,7 @@ class RecordSingle
     static private function getValidUniqueString($unique)
     {
         $formattedUnique = trim((string)$unique);
-        if(!$formattedUnique) {
+        if($formattedUnique === '') {
             throw new DatabaseErrorInvalidUnique();
         }
         return $formattedUnique;

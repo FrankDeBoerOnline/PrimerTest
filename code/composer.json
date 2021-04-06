@@ -8,6 +8,7 @@
     "require": {
         "php": ">=7.2",
         "ext-json": "*",
+        "ext-openssl": "*",
         "guzzlehttp/guzzle": "^6.3@dev",
         "symfony/http-foundation": "^4.3@dev",
         "symfony/yaml": "^4.2",
@@ -27,7 +28,9 @@
     "autoload": {
         "psr-4": {
             "FrankDeBoerOnline\\" : ["src/FrankDeBoerOnline/", "html/src/FrankDeBoerOnline/"],
-            "Tests\\FrankDeBoerOnline\\" : ["tests/FrankDeBoerOnline/", "html/tests/FrankDeBoerOnline/"]
+            "Tests\\FrankDeBoerOnline\\" : ["tests/FrankDeBoerOnline/", "html/tests/FrankDeBoerOnline/"],
+            "PrimerTest\\" : ["src/PrimerTest/", "html/src/PrimerTest/"],
+            "Tests\\PrimerTest\\" : ["tests/PrimerTest/", "html/tests/PrimerTest/"]
         }
     }
 }

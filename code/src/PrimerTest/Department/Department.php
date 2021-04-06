@@ -5,7 +5,6 @@ namespace PrimerTest\Department;
 use FrankDeBoerOnline\Common\DateTime\DateTime;
 use FrankDeBoerOnline\Common\Persist\Persistable;
 use FrankDeBoerOnline\Common\Persist\Persisting;
-use PrimerTest\User\User;
 
 class Department implements Persistable
 {
@@ -40,12 +39,31 @@ class Department implements Persistable
         return (new DepartmentPersistMapper());
     }
 
-    public function __construct($name = '', $description = '', DateTime $datetimeCreated = null)
+    /**
+     * Department constructor.
+     * @param string $name
+     * @param string $description
+     * @param mixed|null $datetimeCreated
+     */
+    public function __construct($name = '', $description = '', $datetimeCreated = null)
     {
         $this
             ->setName($name)
             ->setDescription($description)
             ->setDatetimeCreated($datetimeCreated);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function toJSON()
+    {
+        return [
+            'department_id' => (string)$this->getId(),
+            'name' => (string)$this->getName(),
+            'description' => (string)$this->getDescription(),
+            'datetime_created' => (string)$this->getDatetimeCreated()->getTimestamp()
+        ];
     }
 
     /**
@@ -111,10 +129,10 @@ class Department implements Persistable
     }
 
     /**
-     * @param DateTime $datetimeCreated
+     * @param mixed|null $datetimeCreated
      * @return $this
      */
-    public function setDatetimeCreated(DateTime $datetimeCreated = null)
+    public function setDatetimeCreated($datetimeCreated = null)
     {
         $this->datetimeCreated = new DateTime($datetimeCreated);
         return $this;
