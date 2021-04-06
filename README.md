@@ -6,7 +6,7 @@ For issue setup docker-compose is used building the images for PHP, NGinX, MySQL
 ### Installation
 Assuming you already cloned the project the first step is copying the dev .env file with settings for your local environment.
 
-``cp ./.env-dev.dist ./.env``
+``cp ./.env.dist ./.env``
 
 Building the development environment
 
